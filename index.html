@@ -3,21 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Slot Machine Game</title>
+    <title>Slot Machine</title>
     <link rel="stylesheet" href="css/style.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 </head>
 <body>
     <div class="slot-machine">
         <div class="slot-header">
-            <h1>Slot Machine</h1>
+            <h1>Slot Machine Test</h1>
             <div class="coins">
                 <img src="img/coins.png" alt="coins">
                 <span id="coin-count">1000</span>
             </div>
         </div>
         
-        <div id="three-container"></div>
+        <div id="game-container">
+            <div id="three-container"></div>
+        </div>
         
         <button id="lever" onclick="toggleSpin()">Puxar Alavanca</button>
     </div>
