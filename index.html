@@ -8,26 +8,26 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 </head>
 <body>
-    <!-- Tela inicial do jogo -->
-    <div id="game-screen" class="screen hidden">
-        <h1>Bem-vindo ao Slot Machine</h1>
-        <input type="text" id="player-name" placeholder="Digite seu nome">
-        <button id="start-game">Iniciar Jogo</button>
-    </div>
-
-    <!-- Tela do jogo dos slots -->
-    <div id="start-screen" class="screen">
-        <h2 id="player-display"></h2>
-        <div id="coin-container">
+    <div class="slot-machine">
+        <h1 class="title">Slot Machine</h1>
+        
+        <div class="coins">
             <img src="img/coins.png" alt="coins">
             <span id="coin-count">1000</span>
         </div>
+        <div id="result-line"></div> <!-- Linha de destaque da combinação -->
+
         <div id="three-container"></div>
-        <button id="lever">Puxar Alavanca</button>
-        <button id="reload-credits">Recarregar Créditos</button>
+        
+        <!-- Ponteiros corrigidos como setas -->
+        <div class="pointer pointer-left"></div> <!-- Seta esquerda -->
+        <div class="pointer pointer-right"></div> <!-- Seta direita -->
+        
+        <button id="lever" onclick="toggleSpin()">Puxar Alavanca</button>
+
         <div id="game-over-screen" class="hidden">
-            <h2>Fim de Jogo</h2>
-            <button id="restart-game">Jogar Novamente</button>
+            <h2>Fim de Jogo!</h2>
+            <button id="restart-game" onclick="restartGame()">Jogar Novamente</button>
         </div>
     </div>
 

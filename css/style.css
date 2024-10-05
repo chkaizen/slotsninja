@@ -1,54 +1,183 @@
+/* Estilos Gerais */
 body {
-    font-family: Arial, sans-serif;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    height: 100vh;
     margin: 0;
-    background-color: #f4f4f4;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background: linear-gradient(to bottom, #87CEEB, #1e3c72); /* Degradê do azul celestial ao azul marinho */
+    overflow: hidden;
+    position: relative;
+    font-family: Arial, sans-serif;
 }
 
-.screen {
+h1.title {
+    position: absolute;
+    top: 20px;
+    width: 100%;
     text-align: center;
+    color: white;
+    font-size: 2.5em;
+    margin: 0;
+}
+
+/* Estrelas */
+.star {
+    position: absolute;
+    top: -10px;
+    width: 4px;
+    height: 3px;
+    background-color: white;
+    border-radius: 50%;
+    opacity: 0;
+    animation: fall 5s linear infinite;
+}
+
+/* Animação das estrelas caindo */
+@keyframes fall {
+    0% {
+        opacity: 0;
+        transform: translateY(0);
+    }
+    20% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0;
+        transform: translateY(100vh);
+    }
+}
+
+/* Fundo de gradiente fixo */
+body::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(to bottom, rgba(135, 206, 235, 0.7), rgba(30, 60, 114, 1));
+    z-index: 0;
+    pointer-events: none;
+    opacity: 1;
+}
+
+/* Estilo dos créditos e botão */
+.coins {
+    position: absolute;
+    top: 70px;
+    right: 20px;
+    display: flex;
+    align-items: center;
+    z-index: 2;
+}
+
+.coins img {
+    width: 40px;
+    margin-right: 10px;
+}
+
+.coins span {
+    font-size: 24px;
+    color: white;
+}
+
+.slot-machine {
+    position: relative;
+    z-index: 2;
+}
+
+#three-container {
+    width: 400px;
+    height: 400px;
+    background-color: black;
+    margin: 20px auto;
+    z-index: 2;
+}
+
+#lever {
+    padding: 10px 20px;
+    font-size: 18px;
+    background-color: green;
+    color: white;
+    border: none;
+    cursor: pointer;
+    position: relative;
+    display: block;
+    margin: 0 auto;
+}
+
+#lever:hover {
+    background-color: #218838;
 }
 
 .hidden {
     display: none;
 }
 
-#coin-container {
-    margin-bottom: 10px;
+#game-over-screen {
+    text-align: center;
+    color: white;
 }
 
-#lever, #reload-credits, #start-game, #restart-game {
-    margin: 10px;
+#game-over-screen h2 {
+    font-size: 2.5em;
+    margin-bottom: 20px;
+}
+
+#restart-game {
     padding: 10px 20px;
+    font-size: 18px;
     background-color: green;
     color: white;
     border: none;
     cursor: pointer;
+    display: block;
+    margin: 0 auto;
 }
 
-#lever:hover, #reload-credits:hover, #start-game:hover, #restart-game:hover {
+#restart-game:hover {
     background-color: #218838;
 }
 
-#three-container {
-    width: 300px;
-    height: 300px;
-    margin: 20px auto;
-    background-color: black;
-}
-
-#game-over-screen {
-    margin-top: 20px;
-}
-
-#player-display {
+/* Estilos para os ponteiros */
+.pointer {
     position: absolute;
-    top: 10px;
+    width: 0;
+    height: 0;
+    border-left: 15px solid transparent;
+    border-right: 15px solid transparent;
+    border-bottom: 30px solid red; /* Cor da seta */
+    top: 45%;
+    transform: translateY(-50%);
+    z-index: 3;
+    animation: pointerBounce 0.3s ease-in-out infinite alternate; /* Animação sutil */
+}
+
+.pointer-left {
     left: 10px;
-    font-size: 1.2em;
-    font-weight: bold;
+}
+
+.pointer-right {
+    right: 10px;
+}
+
+/* Animação dos ponteiros */
+@keyframes pointerBounce {
+    0% { transform: translateY(-52%); }
+    100% { transform: translateY(-48%); }
+}
+
+/* Linha de destaque centralizada */
+#result-line {
+    position: absolute;
+    top: 45%; /* Alinha na metade do contêiner */
+    left: 0;
+    width: 100%;
+    height: 50px;
+    background-color: rgba(255, 255, 0, 0.8); /* Destaque amarelo */
+    z-index: 4;
+    display: none;
+    transform: translateY(-50%); /* Ajuste fino para centralizar */
 }
