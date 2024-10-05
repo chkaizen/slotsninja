@@ -8,20 +8,27 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 </head>
 <body>
-    <div class="slot-machine">
-        <div class="slot-header">
-            <h1>Slot Machine Test</h1>
-            <div class="coins">
-                <img src="img/coins.png" alt="coins">
-                <span id="coin-count">1000</span>
-            </div>
+    <!-- Tela inicial do jogo -->
+    <div id="start-screen" class="screen">
+        <h1>Bem-vindo ao Slot Machine</h1>
+        <input type="text" id="player-name" placeholder="Digite seu nome">
+        <button id="start-game">Iniciar Jogo</button>
+    </div>
+
+    <!-- Tela do jogo dos slots -->
+    <div id="game-screen" class="screen hidden">
+        <h2 id="player-display"></h2>
+        <div id="coin-container">
+            <img src="img/coins.png" alt="coins">
+            <span id="coin-count">1000</span>
         </div>
-        
-        <div id="game-container">
-            <div id="three-container"></div>
+        <div id="three-container"></div>
+        <button id="lever">Puxar Alavanca</button>
+        <button id="reload-credits">Recarregar Créditos</button>
+        <div id="game-over-screen" class="hidden">
+            <h2>Fim de Jogo</h2>
+            <button id="restart-game">Jogar Novamente</button>
         </div>
-        
-        <button id="lever" onclick="toggleSpin()">Puxar Alavanca</button>
     </div>
 
     <script src="js/script.js"></script>

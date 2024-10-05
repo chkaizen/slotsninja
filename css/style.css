@@ -1,40 +1,54 @@
 body {
     font-family: Arial, sans-serif;
-    background-color: #f4f4f4;
-    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
     margin: 0;
+    background-color: #f4f4f4;
 }
 
-.slot-machine {
-    max-width: 600px;
-    margin: 50px auto;
-    padding: 20px;
-    background-color: white;
-    border: 2px solid #ccc;
-    border-radius: 10px;
+.screen {
+    text-align: center;
 }
 
-.slot-header {
-    margin-bottom: 20px;
+.hidden {
+    display: none;
+}
+
+#coin-container {
+    margin-bottom: 10px;
+}
+
+#lever, #reload-credits, #start-game, #restart-game {
+    margin: 10px;
+    padding: 10px 20px;
+    background-color: green;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+#lever:hover, #reload-credits:hover, #start-game:hover, #restart-game:hover {
+    background-color: #218838;
 }
 
 #three-container {
-    width: 400px;
-    height: 400px;
-    margin: 0 auto;
+    width: 300px;
+    height: 300px;
+    margin: 20px auto;
+    background-color: black;
 }
 
-#lever {
-    background-color: #28a745;
-    color: white;
-    font-size: 1.2em;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
+#game-over-screen {
     margin-top: 20px;
 }
 
-#lever:hover {
-    background-color: #218838;
+#player-display {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    font-size: 1.2em;
+    font-weight: bold;
 }
