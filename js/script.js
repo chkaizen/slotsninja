@@ -1,165 +1,123 @@
-// Cena e câmera
-const scene = new THREE.Scene();
-const camera = new THREE.PerspectiveCamera(75, window.innerWidth / 500, 0.1, 1000);
-const renderer = new THREE.WebGLRenderer({ antialias: true });
-renderer.setSize(500, 500);
-document.getElementById("three-container").appendChild(renderer.domElement);
+let scene, camera, renderer, cylinders = [], spinning = false;
+let spinSpeed = [0, 0, 0];  // Velocidades individuais para cada cilindro
+let stopOrder = [false, false, false];  // Controle de parada de cada cilindro
+let spinStartTime = 0;
 
-camera.position.z = 7;
-
-// Adicionar luz à cena
-const light = new THREE.PointLight(0xffffff, 1, 100);
-light.position.set(10, 10, 10);
-scene.add(light);
-
-// Distribuição dos números de 1 a 12 em cada face do cilindro
-const numbers = Array.from({ length: 12 }, (_, i) => i + 1);
-
-// Função para embaralhar os números a cada giro
-function getRandomNumbers() {
-    return numbers.sort(() => 0.5 - Math.random());
-}
-
-// Dimensões e geometria do cilindro
-const radiusTop = 1.5;
-const radiusBottom = 1.5;
-const height = 2.2;
-const radialSegments = 12; // Dividir em 12 partes
-
-const discs = [];
-for (let i = 0; i < 3; i++) {
-    const geometry = new THREE.CylinderGeometry(radiusTop, radiusBottom, height, radialSegments, 1, true);
-
-    // Criar materiais para cada símbolo e distribui-los ao longo dos segmentos
-    const randomSymbols = getRandomSymbols();  // A função getRandomSymbols() já deve estar definida
-    const materials = randomSymbols.map(symbol => {
-        const material = new THREE.MeshBasicMaterial({ map: symbol });
-        material.side = THREE.DoubleSide;  // Certificar-se de que as texturas aparecem em ambos os lados
-        return material;
-    });
-
-    const disc = new THREE.Mesh(geometry, materials);
+function init() {
+    // Cria a cena e a câmera
+    scene = new THREE.Scene();
+    camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
     
-    // Ajustar as rotações e posições dos cilindros
-    disc.rotation.x = Math.PI / 2;  // Girar o cilindro para que fique deitado
-    disc.rotation.z = 0;  // Garantir que as faces curvas estejam voltadas para o usuário
+    // Configura o renderizador
+    renderer = new THREE.WebGLRenderer();
+    renderer.setSize(400, 400);  // Ajusta o tamanho do renderizador
+    document.getElementById('three-container').appendChild(renderer.domElement);
 
-    // Espaçar os cilindros corretamente
-    disc.position.x = i * 3.0 - 3.0;  // Ajustar a posição no eixo X para espaçar os cilindros
+    // Adiciona luz à cena
+    const light = new THREE.PointLight(0xffffff, 1, 100);
+    light.position.set(10, 10, 10);
+    scene.add(light);
 
-    scene.add(disc);
-    discs.push(disc);  // Adicionar o cilindro ao array de cilindros
+    // Geometria dos cilindros (discos)
+    let geometry = new THREE.CylinderGeometry(1, 1, 1, 32);  // Diâmetro 1, altura 1 (mais largo)
+
+    // Criar uma textura com os números de 1 a 25
+    let texture = createNumberTexture();
+
+    // Cria 3 cilindros com a textura de números aplicada
+    for (let i = 0; i < 3; i++) {
+        let material = new THREE.MeshBasicMaterial({ map: texture });
+
+        let cylinder = new THREE.Mesh(geometry, material);
+        
+        // Posiciona os cilindros com espaçamento
+        cylinder.position.x = i * 2 - 2;  // Posição horizontal (-2, 0, 2)
+
+        // Alinha os cilindros corretamente no eixo X para rotação
+        cylinder.rotation.z = Math.PI / 2;  // Mantém o cilindro rotacionado no eixo Z
+        cylinder.rotation.y = 0;  // Mantém os números na face correta sem rotacioná-los mais
+
+        // Adiciona o cilindro à cena
+        cylinders.push(cylinder);
+        scene.add(cylinder);
+    }
+
+    // Posiciona a câmera para ver os cilindros
+    camera.position.z = 10;
+
+    animate();  // Inicia a animação
 }
 
-// Animação de rotação
-let isSpinning = false;
-let spinSpeed = 0.1;
+// Função para criar uma textura com os números de 1 a 25 distribuídos em uma faixa
+function createNumberTexture() {
+    let canvas = document.createElement('canvas');
+    canvas.width = 1024;  // Largura suficiente para todos os números
+    canvas.height = 64;   // Altura fixa
+
+    let context = canvas.getContext('2d');
+    context.fillStyle = '#ffffff';  // Fundo branco
+    context.fillRect(0, 0, canvas.width, canvas.height);  // Preenche o fundo
+
+    context.fillStyle = '#000000';  // Cor dos números
+    context.font = 'Bold 40px Arial';
+
+    // Desenhar os números de 1 a 25 na faixa
+    for (let i = 1; i <= 25; i++) {
+        let x = (i - 1) * 40;  // Posicionamento horizontal
+        context.fillText(i.toString(), x, 45);  // Desenha o número
+    }
+
+    return new THREE.CanvasTexture(canvas);  // Converte o canvas para textura
+}
+
+function toggleSpin() {
+    if (!spinning) {
+        // Iniciar giro
+        spinning = true;
+        spinStartTime = performance.now();  // Captura o tempo de início
+        spinSpeed = [0.1, 0.1, 0.1];  // Aceleração inicial
+        stopOrder = [false, false, false];  // Reseta as paradas
+    }
+}
 
 function animate() {
-    requestAnimationFrame(animate);
+    requestAnimationFrame(animate);  // Rechama a função para criar o loop de animação
 
-    if (isSpinning) {
-        discs.forEach(disc => {
-            disc.rotation.y += spinSpeed;  // Girar no eixo Y (correto para girar horizontalmente)
-        });
-    }
+    if (spinning) {
+        let currentTime = performance.now();
+        let elapsed = (currentTime - spinStartTime) / 1000;  // Tempo em segundos
 
-    renderer.render(scene, camera);
-}
+        // Aceleração e desaceleração
+        for (let i = 0; i < 3; i++) {
+            if (!stopOrder[i]) {
+                // Acelera inicialmente e depois desacelera
+                if (elapsed < 1) {
+                    spinSpeed[i] = 0.2 * elapsed;  // Aumenta a velocidade
+                } else if (elapsed > 1 && elapsed < 2.5) {
+                    spinSpeed[i] = 0.2;  // Mantém a velocidade constante
+                } else if (elapsed > 2.5 && spinSpeed[i] > 0) {
+                    spinSpeed[i] -= 0.01;  // Desacelera
+                }
 
-animate();
+                // Verifica se deve parar o cilindro
+                if (spinSpeed[i] <= 0) {
+                    stopOrder[i] = true;  // Cilindro parou
+                    spinSpeed[i] = 0;  // Garante que pare
+                }
+            }
 
+            // Faz os cilindros girarem no eixo X
+            cylinders[i].rotation.x += spinSpeed[i];
+        }
 
-// Alternar rotação
-function toggleSpin() {
-    isSpinning = !isSpinning;
-    if (isSpinning) {
-        spinSpeed = 0.2;
-        setTimeout(stopSpin, 3500); // Parar os cilindros após 3.5 segundos
-        updateRandomNumbers();  // Atualizar os números ao girar
-    }
-}
-
-// Atualizar os números em cada giro
-function updateRandomNumbers() {
-    discs.forEach(disc => {
-        const randomNumbers = getRandomNumbers();
-        randomNumbers.forEach((number, index) => {
-            const context = disc.material[index].map.image.getContext('2d');
-            context.clearRect(0, 0, 256, 256);
-            context.fillText(number, 128, 128);
-            disc.material[index].map.needsUpdate = true;
-        });
-    });
-}
-
-// Parar os cilindros gradualmente
-function stopSpin() {
-    let deceleration = 0.005;
-
-    function slowDown() {
-        if (spinSpeed > 0) {
-            spinSpeed -= deceleration;
-            requestAnimationFrame(slowDown);
-        } else {
-            isSpinning = false;
+        // Para o giro gradualmente após 3.5 segundos
+        if (elapsed > 3.5) {
+            spinning = false;
         }
     }
 
-    slowDown();
+    renderer.render(scene, camera);  // Renderiza a cena
 }
 
-// Sistema de moedas
-let coins = 1000;
-function updateCoins() {
-    document.getElementById('coin-count').innerText = coins;
-}
-
-function deductCoins() {
-    if (coins >= 100) {
-        coins -= 100;
-        updateCoins();
-    } else {
-        endGame();
-    }
-}
-
-function endGame() {
-    document.getElementById('game-over-screen').classList.remove('hidden');
-    document.getElementById('lever').disabled = true;
-}
-
-// Evento do botão de puxar a alavanca
-document.getElementById('lever').addEventListener('click', () => {
-    if (!isSpinning && coins >= 100) {
-        deductCoins();
-        toggleSpin();
-    }
-});
-
-// Evento para recarregar créditos (ainda sem funcionalidade)
-document.getElementById('reload-credits').addEventListener('click', () => {
-    alert('Recarregar créditos em breve!');
-});
-
-// Evento para reiniciar o jogo
-document.getElementById('restart-game').addEventListener('click', () => {
-    coins = 1000;
-    updateCoins();
-    document.getElementById('game-over-screen').classList.add('hidden');
-    document.getElementById('lever').disabled = false;
-});
-
-// Iniciar o jogo após a tela inicial
-document.getElementById('start-game').addEventListener('click', () => {
-    const playerName = document.getElementById('player-name').value;
-    if (playerName) {
-        document.getElementById('player-display').innerText = `Jogador: ${playerName}`;
-        document.getElementById('start-screen').classList.add('hidden');
-        document.getElementById('game-screen').classList.remove('hidden');
-    } else {
-        alert("Por favor, insira seu nome.");
-    }
-});
-
-updateCoins();
+// Inicializa o Three.js
+init();
