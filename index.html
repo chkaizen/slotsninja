@@ -10,23 +10,95 @@
 <body>
     <div class="slot-machine">
         <h1 class="title">Slot Machine</h1>
-        
+
         <div class="coins">
             <img src="img/coins.png" alt="coins">
             <span id="coin-count">1000</span>
         </div>
+
+        <!-- Control buttons -->
+        <div class="control-buttons">
+            <button class="icon-button" onclick="toggleStats()" title="Estatísticas">📊</button>
+            <button class="icon-button" onclick="togglePaytable()" title="Tabela de Prêmios">💰</button>
+        </div>
+
         <div id="result-line"></div> <!-- Linha de destaque da combinação -->
 
+        <!-- Win Message -->
+        <div id="win-message" class="win-message">
+            <div id="win-type" class="win-type">VITÓRIA!</div>
+            <div id="win-amount" class="win-amount">+500 moedas!</div>
+        </div>
+
         <div id="three-container"></div>
-        
+
         <!-- Ponteiros corrigidos como setas -->
         <div class="pointer pointer-left"></div> <!-- Seta esquerda -->
         <div class="pointer pointer-right"></div> <!-- Seta direita -->
-        
+
+        <!-- Bet Selection -->
+        <div class="bet-controls">
+            <span class="bet-label">Aposta:</span>
+            <button class="bet-button" onclick="setBet(25)">25</button>
+            <button class="bet-button active" onclick="setBet(50)">50</button>
+            <button class="bet-button" onclick="setBet(100)">100</button>
+            <button class="bet-button" onclick="setBet(250)">250</button>
+            <div class="current-bet">Aposta Atual: <span id="current-bet">50</span></div>
+        </div>
+
         <button id="lever" onclick="toggleSpin()">Puxar Alavanca</button>
+
+        <!-- Statistics Panel -->
+        <div id="stats-panel" class="panel">
+            <h3>Estatísticas</h3>
+            <div class="stat-item">
+                <span>Total de Giros:</span>
+                <span id="total-spins">0</span>
+            </div>
+            <div class="stat-item">
+                <span>Total de Vitórias:</span>
+                <span id="total-wins">0</span>
+            </div>
+            <div class="stat-item">
+                <span>Taxa de Vitória:</span>
+                <span id="win-rate">0%</span>
+            </div>
+            <div class="stat-item">
+                <span>Maior Vitória:</span>
+                <span id="biggest-win">0</span>
+            </div>
+            <button class="close-button" onclick="toggleStats()">Fechar</button>
+        </div>
+
+        <!-- Paytable Panel -->
+        <div id="paytable-panel" class="panel">
+            <h3>Tabela de Prêmios</h3>
+            <div class="paytable-item">
+                <span>🎰 Três 7s:</span>
+                <span class="multiplier">20x</span>
+            </div>
+            <div class="paytable-item">
+                <span>💎 Três 12s:</span>
+                <span class="multiplier">15x</span>
+            </div>
+            <div class="paytable-item">
+                <span>🎉 Três Iguais:</span>
+                <span class="multiplier">10x</span>
+            </div>
+            <div class="paytable-item">
+                <span>📈 Sequencial:</span>
+                <span class="multiplier">5x</span>
+            </div>
+            <div class="paytable-item">
+                <span>🎯 Par:</span>
+                <span class="multiplier">2x</span>
+            </div>
+            <button class="close-button" onclick="togglePaytable()">Fechar</button>
+        </div>
 
         <div id="game-over-screen" class="hidden">
             <h2>Fim de Jogo!</h2>
+            <p>Você fez <strong id="final-spins">0</strong> giros com <strong id="final-wins">0</strong> vitórias!</p>
             <button id="restart-game" onclick="restartGame()">Jogar Novamente</button>
         </div>
     </div>
